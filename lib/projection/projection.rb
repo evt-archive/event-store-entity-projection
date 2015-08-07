@@ -7,7 +7,7 @@ module Projection
 
     cls.extend ApplyMacro
     cls.extend Info
-    cls.extend Apply
+    # cls.extend Apply
     cls.extend EventStore::Messaging::Dispatcher::MessageRegistry
 
     cls.send :dependency, :reader, EventStore::Messaging::Reader
@@ -52,20 +52,27 @@ module Projection
     end
   end
 
-  module Apply
-    def apply_message(message, entity)
-      logger.trace "Applying #{message.class.name} to #{entity.class.name}"
-      instance = new
-      handler_method_name = Info.handler_name(message)
-      instance.send(handler_method_name, message, entity).tap do
-        logger.debug "Applied #{message.class.name} to #{entity.class.name}"
-      end
-      nil
-    end
-  end
+  # module Apply
+  #   def apply_message(message, entity)
+  #     logger.trace "Applying #{message.class.name} to #{entity.class.name}"
+  #     instance = new
+  #     handler_method_name = Info.handler_name(message)
+  #     instance.send(handler_method_name, message, entity).tap do
+  #       logger.debug "Applied #{message.class.name} to #{entity.class.name}"
+  #     end
+  #     nil
+  #   end
+  # end
 
   def apply(message, entity)
-    self.class.apply_message(message, entity)
+    # self.class.apply_message(message, entity)
+
+    logger.trace "Applying #{message.class.name} to #{entity.class.name}"
+    handler_method_name = Info.handler_name(message)
+    send(handler_method_name, message, entity).tap do
+      logger.debug "Applied #{message.class.name} to #{entity.class.name}"
+    end
+    nil
   end
 
 # - - -

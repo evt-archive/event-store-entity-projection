@@ -5,13 +5,15 @@ describe "Apply Messages" do
 
   projection = Projection::Controls::Projection.example
 
-  other_message = Projection::Controls::Message::OtherMessage.build
-
   specify "SomeMessage" do
     some_message = Projection::Controls::Message::SomeMessage.build
-
     projection.apply some_message, entity
-
     assert(entity.some_attribute == some_message.some_attribute)
+  end
+
+  specify "OtherMessage" do
+    other_message = Projection::Controls::Message::OtherMessage.build
+    projection.apply other_message, entity
+    assert(entity.some_time == other_message.some_time)
   end
 end

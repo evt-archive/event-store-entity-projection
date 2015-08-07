@@ -21,6 +21,13 @@ module Projection
         time || ::Controls::Time.reference
       end
 
+      def self.example
+        msg = SomeMessage.new
+        msg.some_attribute = attribute
+
+        msg
+      end
+
       def self.examples
         msg_1 = SomeMessage.new
         msg_1.some_attribute = attribute

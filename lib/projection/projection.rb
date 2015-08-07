@@ -2,6 +2,7 @@ module Projection
   def self.included(cls)
     cls.extend Logger
     cls.extend Build
+    cls.extend Actuate
     cls.extend ApplyMacro
     cls.extend Info
     cls.extend EventStore::Messaging::Dispatcher::MessageRegistry
@@ -60,11 +61,18 @@ module Projection
     end
   end
 
+  module Actuate
+    def !(entity, stream_name, starting_position: nil, slice_size: nil)
+      instance = build entity, stream_name, starting_position: starting_position, slice_size: slice_size
+      instance.!
+    end
+  end
+
   def initialize(entity=nil)
     @entity = entity
   end
 
-  def call
+  def !
     reader.start
   end
 

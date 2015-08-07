@@ -5,9 +5,7 @@ describe "Project Messages into an Entity from a Stream" do
 
   entity = Projection::Controls::Entity.example
 
-  projection = Projection::Controls::Projection::SomeProjection.build entity, stream_name, starting_position: 0, slice_size: 1
-
-  projection.()
+  Projection::Controls::Projection::SomeProjection.! entity, stream_name, starting_position: 0, slice_size: 1
 
   describe "Entity Attributes" do
     specify "some_attribute" do

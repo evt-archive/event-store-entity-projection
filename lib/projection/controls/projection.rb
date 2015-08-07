@@ -6,13 +6,11 @@ module Projection
         include ::Projection::Controls::Message
 
         apply SomeMessage do |message, entity|
-          logger.data message.inspect
-          logger.data entity.inspect
+          entity.some_attribute = message.some_attribute
         end
 
         apply OtherMessage do |message, entity|
-          logger.data message.inspect
-          logger.data entity.inspect
+          entity.some_time = message.some_time
         end
       end
 

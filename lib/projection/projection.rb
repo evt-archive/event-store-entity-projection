@@ -7,6 +7,7 @@ module Projection
 
     cls.extend ApplyMacro
     cls.extend Info
+    cls.extend Apply
     cls.extend EventStore::Messaging::Dispatcher::MessageRegistry
     # cls.extend EventStore::Messaging::Dispatcher::HandlerRegistry
 
@@ -16,7 +17,7 @@ module Projection
 
   module Logger
     def logger
-      Logger::Telemetry.get self
+      Telemetry::Logger.get self
     end
   end
 
@@ -52,30 +53,48 @@ module Projection
     end
   end
 
-  module Build
-    def self.build(entity, stream_name, starting_position: nil, slice_size: nil)
-      new.tap do |instance|
-        dispatcher = build_dispatcher(instance)
-        EventStore::Messaging::Reader.configure instance, dispatcher, starting_position: starting_position, slice_size: slice_size
-        Telemetry::Logger.configure instance
+  module Apply
+    def !(message, entity)
+      logger.trace "Applying #{message.class.name} to #{entity.class.name}"
+      instance = new
+      handler_method_name = Info.handler_name(message)
+      instance.send(handler_method_name, message, entity).tap do
+        logger.debug "Applied #{message.class.name} to #{entity.class.name}"
       end
+      nil
     end
   end
 
-  module BuildDispatcher
-    def self.build_dispatcher(instance)
-      dispatcher.class.handler instance.class
-      dispatcher
-    end
+  def apply(message, entity)
+    self.class.! message, entity
   end
 
-  module Actuate
-    def !(entity, stream_name, starting_position: nil, slice_size: nil)
-      instance = build(entity, stream_name, starting_position: starting_position, slice_size: slice_size)
-      instance.!
-    end
-  end
+# - - -
 
-  def !
-  end
+  # module Build
+  #   def self.build(entity, stream_name, starting_position: nil, slice_size: nil)
+  #     new.tap do |instance|
+  #       dispatcher = build_dispatcher(instance)
+  #       EventStore::Messaging::Reader.configure instance, dispatcher, starting_position: starting_position, slice_size: slice_size
+  #       Telemetry::Logger.configure instance
+  #     end
+  #   end
+  # end
+
+  # module BuildDispatcher
+  #   def self.build_dispatcher(instance)
+  #     dispatcher.class.handler instance.class
+  #     dispatcher
+  #   end
+  # end
+
+  # module Actuate
+  #   def !(entity, stream_name, starting_position: nil, slice_size: nil)
+  #     instance = build(entity, stream_name, starting_position: starting_position, slice_size: slice_size)
+  #     instance.!
+  #   end
+  # end
+
+  # def !
+  # end
 end

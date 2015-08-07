@@ -1,6 +1,6 @@
 require_relative 'spec_init'
 
-describe "Handler Macro" do
+describe "Apply Macro" do
   projection = Projection::Controls::Projection.example
 
   describe "Handler Method Definitions" do

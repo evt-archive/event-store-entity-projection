@@ -7,4 +7,3 @@ require 'dependency'; Dependency.activate
 require 'event_store/messaging'
 
 require 'projection/projection'
-require 'projection/project'

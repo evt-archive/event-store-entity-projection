@@ -9,7 +9,6 @@ module Projection
     cls.extend Info
     cls.extend Apply
     cls.extend EventStore::Messaging::Dispatcher::MessageRegistry
-    # cls.extend EventStore::Messaging::Dispatcher::HandlerRegistry
 
     cls.send :dependency, :reader, EventStore::Messaging::Reader
     cls.send :dependency, :logger, Telemetry::Logger
@@ -54,7 +53,7 @@ module Projection
   end
 
   module Apply
-    def !(message, entity)
+    def apply_message(message, entity)
       logger.trace "Applying #{message.class.name} to #{entity.class.name}"
       instance = new
       handler_method_name = Info.handler_name(message)
@@ -66,7 +65,7 @@ module Projection
   end
 
   def apply(message, entity)
-    self.class.! message, entity
+    self.class.apply_message(message, entity)
   end
 
 # - - -

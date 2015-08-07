@@ -1,14 +1,13 @@
 module Projection
   def self.included(cls)
     cls.extend Logger
-    # cls.extend BuildDispatcher
-    # cls.extend Build
-    # cls.extend Actuate
-
+    cls.extend Build
     cls.extend ApplyMacro
     cls.extend Info
     cls.extend EventStore::Messaging::Dispatcher::MessageRegistry
+    cls.extend EventStore::Messaging::Dispatcher::BuildMessage
 
+    cls.send :attr_reader, :entity
     cls.send :dependency, :reader, EventStore::Messaging::Reader
     cls.send :dependency, :logger, Telemetry::Logger
   end
@@ -51,6 +50,32 @@ module Projection
     end
   end
 
+  module Build
+    def build(entity, stream_name, starting_position: nil, slice_size: nil)
+      new(entity).tap do |instance|
+        dispatcher = instance
+        EventStore::Messaging::Reader.configure instance, stream_name, dispatcher, starting_position: starting_position, slice_size: slice_size
+        Telemetry::Logger.configure instance
+      end
+    end
+  end
+
+  def initialize(entity=nil)
+    @entity = entity
+  end
+
+  def call
+    reader.start
+  end
+
+  def build_message(entry_data)
+    self.class.build_message(entry_data)
+  end
+
+  def dispatch(message, _)
+    apply message, entity
+  end
+
   def apply(message, entity)
     logger.trace "Applying #{message.class.name} to #{entity.class.name}"
     handler_method_name = Info.handler_name(message)
@@ -59,33 +84,4 @@ module Projection
     end
     nil
   end
-
-# - - -
-
-  # module Build
-  #   def self.build(entity, stream_name, starting_position: nil, slice_size: nil)
-  #     new.tap do |instance|
-  #       dispatcher = build_dispatcher(instance)
-  #       EventStore::Messaging::Reader.configure instance, dispatcher, starting_position: starting_position, slice_size: slice_size
-  #       Telemetry::Logger.configure instance
-  #     end
-  #   end
-  # end
-
-  # module BuildDispatcher
-  #   def self.build_dispatcher(instance)
-  #     dispatcher.class.handler instance.class
-  #     dispatcher
-  #   end
-  # end
-
-  # module Actuate
-  #   def !(entity, stream_name, starting_position: nil, slice_size: nil)
-  #     instance = build(entity, stream_name, starting_position: starting_position, slice_size: slice_size)
-  #     instance.!
-  #   end
-  # end
-
-  # def !
-  # end
 end

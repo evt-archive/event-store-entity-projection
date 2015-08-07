@@ -1,7 +1,7 @@
 module Projection
   module Controls
     module Projection
-      class SomeEntityProjection
+      class SomeProjection
         include ::Projection
         include ::Projection::Controls::Message
 
@@ -15,7 +15,7 @@ module Projection
       end
 
       def self.example
-        SomeEntityProjection.new
+        SomeProjection.new
       end
     end
   end

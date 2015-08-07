@@ -9,7 +9,7 @@ module Projection
 
         writer = EventStore::Messaging::Writer.build
 
-        messages = Projection::Controls::Message.examples
+        messages = Controls::Message.examples
 
         count.times do |i|
           writer.write messages, stream_name

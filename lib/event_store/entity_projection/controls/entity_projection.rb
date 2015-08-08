@@ -1,10 +1,10 @@
 module EventStore
-  module Projection
+  module EntityProjection
     module Controls
-      module Projection
+      module EntityProjection
         class SomeProjection
-          include EventStore::Projection
-          include EventStore::Projection::Controls::Message
+          include EventStore::EntityProjection
+          include EventStore::EntityProjection::Controls::Message
 
           apply SomeMessage do |message, entity|
             entity.some_attribute = message.some_attribute

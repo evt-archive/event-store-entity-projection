@@ -1,5 +1,5 @@
 module EventStore
-  module Projection
+  module EntityProjection
     module Controls
       module Entity
         class SomeEntity

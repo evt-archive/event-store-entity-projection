@@ -1,5 +1,5 @@
 module EventStore
-  module Projection
+  module EntityProjection
     def self.included(cls)
       cls.extend Logger
       cls.extend Build

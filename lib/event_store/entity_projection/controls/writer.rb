@@ -1,5 +1,5 @@
 module EventStore
-  module Projection
+  module EntityProjection
     module Controls
       module Writer
         def self.write(count=nil, stream_name=nil)

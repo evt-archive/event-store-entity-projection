@@ -1,5 +1,5 @@
 module EventStore
-  module Projection
+  module EntityProjection
     module Controls
       module StreamName
         def self.get(category=nil, id=nil, random: nil)

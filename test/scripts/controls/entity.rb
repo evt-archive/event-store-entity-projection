@@ -1,4 +1,4 @@
 require_relative 'controls_init'
 
-subject = Projection::Controls::Entity
+subject = EntityProjection::Controls::Entity
 Controls.output subject, :example

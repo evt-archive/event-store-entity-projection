@@ -1,12 +1,14 @@
-# Projection
+# Project
 
+## Entity
 class SomeEntity
   attr_accessor :some_attribute
   attr_accessor :some_time
 end
 
-class SomeProjection
-  include EventStore::Projection
+## Projection Definition
+class SomeEntityProjection
+  include EventStore::EntityProjection
 
   apply SomeMessage do |message, entity|
     entity.some_attribute = message.some_attribute
@@ -20,4 +22,4 @@ end
 ## Project Into an Entity
 
 entity = SomeEntity.new
-SomeProjection.! entity, stream_name, starting_position: 0, slice_size: 1
+SomeProjection.! entity, stream_name, starting_position: entity.version

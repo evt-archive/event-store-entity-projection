@@ -6,7 +6,7 @@ class SomeEntity
 end
 
 class SomeProjection
-  include Projection
+  include EventStore::Projection
 
   apply SomeMessage do |message, entity|
     entity.some_attribute = message.some_attribute
@@ -20,4 +20,4 @@ end
 ## Project Into an Entity
 
 entity = SomeEntity.new
-Projection::Controls::Projection::SomeProjection.! entity, stream_name, starting_position: 0, slice_size: 1
+SomeProjection.! entity, stream_name, starting_position: 0, slice_size: 1

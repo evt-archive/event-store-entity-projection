@@ -6,4 +6,4 @@ require 'telemetry/logger'
 require 'dependency'; Dependency.activate
 require 'event_store/messaging'
 
-require 'projection/projection'
+require 'event_store/projection/projection'

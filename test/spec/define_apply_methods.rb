@@ -1,7 +1,7 @@
 require_relative 'spec_init'
 
 describe "Apply Macro" do
-  projection = Projection::Controls::Projection.example
+  projection = EventStore::Projection::Controls::Projection.example
 
   describe "Handler Method Definitions" do
     specify "apply_some_message" do
@@ -15,11 +15,11 @@ describe "Apply Macro" do
 
   describe "Register Messages" do
     specify "SomeMessage" do
-      projection.class.message_registry.registered? Projection::Controls::Message::SomeMessage
+      projection.class.message_registry.registered? EventStore::Projection::Controls::Message::SomeMessage
     end
 
     specify "OtherMessage" do
-      projection.class.message_registry.registered? Projection::Controls::Message::OtherMessage
+      projection.class.message_registry.registered? EventStore::Projection::Controls::Message::OtherMessage
     end
   end
 end

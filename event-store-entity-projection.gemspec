@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 Gem::Specification.new do |s|
-  s.name = 'event_store_messaging'
-  s.summary = 'Coordinates messaging with Event Store'
+  s.name = 'event_store_entity_projection'
+  s.summary = 'Projects an event stream into an entity'
   s.version = '0.0.0'
   s.authors = ['']
   s.require_paths = ['lib']

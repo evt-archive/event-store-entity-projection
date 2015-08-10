@@ -2,9 +2,7 @@ module EventStore
   module EntityProjection
     module Controls
       module Writer
-        def self.write(count=nil, stream_name=nil)
-          count ||= 1
-
+        def self.write(stream_name=nil)
           stream_name = Controls::StreamName.get stream_name
           path = "/streams/#{stream_name}"
 
@@ -12,9 +10,7 @@ module EventStore
 
           messages = Controls::Message.examples
 
-          count.times do |i|
-            writer.write messages, stream_name
-          end
+          writer.write messages, stream_name
 
           stream_name
         end

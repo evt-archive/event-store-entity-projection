@@ -1,6 +1,3 @@
-require 'controls'
-
-require 'event_store/client/http/controls'
 require 'event_store/messaging/controls'
 
 require 'event_store/entity_projection/controls/stream_name'

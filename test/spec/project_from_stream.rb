@@ -1,7 +1,7 @@
 require_relative 'spec_init'
 
 describe "Project Messages into an Entity from a Stream" do
-  stream_name = EventStore::EntityProjection::Controls::Writer.write 'testProjection'
+  stream_name = EventStore::EntityProjection::Controls::Writer.write_batch 'testProjection'
 
   entity = EventStore::EntityProjection::Controls::Entity.example
 

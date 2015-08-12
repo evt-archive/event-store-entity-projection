@@ -2,7 +2,7 @@ module EventStore
   module EntityProjection
     module Controls
       module Writer
-        def self.write(stream_name=nil)
+        def self.write_batch(stream_name=nil)
           stream_name = Controls::StreamName.get stream_name
           path = "/streams/#{stream_name}"
 

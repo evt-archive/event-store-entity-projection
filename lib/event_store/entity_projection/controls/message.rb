@@ -25,14 +25,11 @@ module EventStore
         def self.example
           msg = SomeMessage.new
           msg.some_attribute = attribute
-
           msg
         end
 
         def self.some_message
-          msg = SomeMessage.new
-          msg.some_attribute = attribute
-          msg
+          example
         end
 
         def self.other_message

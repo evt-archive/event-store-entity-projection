@@ -29,14 +29,20 @@ module EventStore
           msg
         end
 
+        def self.some_message
+          msg = SomeMessage.new
+          msg.some_attribute = attribute
+          msg
+        end
+
+        def self.other_message
+          msg = OtherMessage.new
+          msg.some_time = time
+          msg
+        end
+
         def self.examples
-          msg_1 = SomeMessage.new
-          msg_1.some_attribute = attribute
-
-          msg_2 = OtherMessage.new
-          msg_2.some_time = time
-
-          [msg_1, msg_2]
+          [some_message, other_message]
         end
       end
     end

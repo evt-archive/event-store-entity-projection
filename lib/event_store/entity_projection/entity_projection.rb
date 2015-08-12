@@ -90,6 +90,7 @@ module EventStore
       handler_method_name = Info.handler_name(message)
       send(handler_method_name, message, entity).tap do
         logger.debug "Applied #{message.class.name} to #{entity.class.name}"
+        logger.data entity.inspect
       end
       nil
     end

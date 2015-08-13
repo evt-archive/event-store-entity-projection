@@ -54,10 +54,12 @@ module EventStore
 
     module Build
       def build(entity, stream_name, starting_position: nil, slice_size: nil)
+        logger.trace "Building projection (Entity Class: #{entity.class.name}, Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size})"
         new(entity).tap do |instance|
           dispatcher = instance
           EventStore::Messaging::Reader.configure instance, stream_name, dispatcher, starting_position: starting_position, slice_size: slice_size
           Telemetry::Logger.configure instance
+          logger.debug "Built projection (Entity Class: #{entity.class.name}, Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size})"
         end
       end
     end
@@ -74,10 +76,14 @@ module EventStore
     end
 
     def !
+      logger.trace "Running projection"
       event_number = nil
       reader.start do |_, event_data|
         event_number = event_data.number
       end
+
+      logger.debug "Ran projection"
+      logger.data "Event Number: #{event_number}"
 
       event_number
     end

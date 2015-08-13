@@ -74,7 +74,12 @@ module EventStore
     end
 
     def !
-      reader.start
+      event_number = nil
+      reader.start do |_, event_data|
+        event_number = event_data.number
+      end
+
+      event_number
     end
 
     def build_message(entry_data)

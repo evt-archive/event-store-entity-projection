@@ -5,7 +5,7 @@ describe "Project Messages into an Entity from a Stream" do
 
   entity = EventStore::EntityProjection::Controls::Entity.example
 
-  version = EventStore::EntityProjection::Controls::EntityProjection::SomeProjection.! entity, stream_name, starting_position: 0, slice_size: 1
+  event_number = EventStore::EntityProjection::Controls::EntityProjection::SomeProjection.! entity, stream_name, starting_position: 0, slice_size: 1
 
   describe "Entity Attributes" do
     specify "some_attribute" do
@@ -18,6 +18,6 @@ describe "Project Messages into an Entity from a Stream" do
   end
 
   specify "Version" do
-    assert(version == 1)
+    assert(event_number == 1)
   end
 end

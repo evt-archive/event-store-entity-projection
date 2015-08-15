@@ -82,8 +82,7 @@ module EventStore
         event_number = event_data.number
       end
 
-      logger.debug "Ran projection"
-      logger.data "Event Number: #{event_number}"
+      logger.debug "Ran projection (Last Event Number: #{event_number})"
 
       event_number
     end

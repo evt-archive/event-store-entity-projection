@@ -5,7 +5,7 @@ describe "Project Messages from a Stream that Doesn't Exist" do
 
   entity = EventStore::EntityProjection::Controls::Entity.example
 
-  event_number = EventStore::EntityProjection::Controls::EntityProjection::SomeProjection.! entity, stream_name
+  event_number = EventStore::EntityProjection::Controls::EntityProjection::SomeProjection.(entity, stream_name)
 
   logger(__FILE__).info "Last Event Number: #{event_number}"
 

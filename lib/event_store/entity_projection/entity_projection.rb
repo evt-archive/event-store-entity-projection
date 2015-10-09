@@ -65,17 +65,18 @@ module EventStore
     end
 
     module Actuate
-      def !(entity, stream_name, starting_position: nil, slice_size: nil)
+      def call(entity, stream_name, starting_position: nil, slice_size: nil)
         instance = build entity, stream_name, starting_position: starting_position, slice_size: slice_size
-        instance.!
+        instance.()
       end
+      alias :! :call # TODO: Remove deprecated actuator [Kelsey, Thu Oct 08 2015]
     end
 
     def initialize(entity=nil)
       @entity = entity
     end
 
-    def !
+    def call
       logger.trace "Running projection"
       event_number = nil
       reader.start do |_, event_data|
@@ -86,6 +87,7 @@ module EventStore
 
       event_number
     end
+    alias :! :call # TODO: Remove deprecated actuator [Kelsey, Thu Oct 08 2015]
 
     def build_message(entry_data)
       self.class.build_message(entry_data)

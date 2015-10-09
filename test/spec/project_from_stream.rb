@@ -5,7 +5,7 @@ describe "Project Messages into an Entity from a Stream" do
 
   entity = EventStore::EntityProjection::Controls::Entity.example
 
-  event_number = EventStore::EntityProjection::Controls::EntityProjection::SomeProjection.! entity, stream_name, starting_position: 0, slice_size: 1
+  event_number = EventStore::EntityProjection::Controls::EntityProjection::SomeProjection.(entity, stream_name, starting_position: 0, slice_size: 1)
 
   describe "Entity Attributes" do
     specify "some_attribute" do

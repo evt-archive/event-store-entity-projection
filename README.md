@@ -26,5 +26,5 @@ end
 ## Project Into an Entity
 ```ruby
 entity = SomeEntity.new
-SomeProjection.! entity, stream_name, starting_position: some_version
+SomeProjection.(entity, stream_name, starting_position: some_version)
 ```

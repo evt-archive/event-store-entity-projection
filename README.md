@@ -28,3 +28,7 @@ end
 entity = SomeEntity.new
 SomeProjection.(entity, stream_name, starting_position: some_version)
 ```
+
+## License
+
+The `event_store-entity_projection` library is released under the [MIT License](https://github.com/obsidian-btc/event-store-entity-projection/blob/master/MIT-License.txt).

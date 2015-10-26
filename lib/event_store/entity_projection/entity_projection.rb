@@ -94,7 +94,9 @@ module EventStore
     end
 
     def dispatch(message, _)
-      apply message, entity
+      if self.class.handles?(message)
+        apply message, entity
+      end
     end
 
     def apply(message, entity)

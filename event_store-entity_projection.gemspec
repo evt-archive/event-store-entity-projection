@@ -9,11 +9,20 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.required_ruby_version = '>= 1.9.2'
 
-  s.add_runtime_dependency 'inclusion', '1.0.0'
+  # TODO try remove Scott
+  # s.add_runtime_dependency 'inclusion', '1.0.0'
 
-  s.add_runtime_dependency 'set_attributes'
-  s.add_runtime_dependency 'schema'
-  s.add_runtime_dependency 'telemetry-logger'
+  s.add_runtime_dependency 'controls'
   s.add_runtime_dependency 'dependency'
   s.add_runtime_dependency 'event_store-messaging'
+  s.add_runtime_dependency 'schema'
+  s.add_runtime_dependency 'set_attributes'
+  s.add_runtime_dependency 'telemetry-logger'
+
+  s.add_development_dependency 'process_host'
+  s.add_development_dependency 'runner'
+
+  s.add_development_dependency 'minitest'
+  s.add_development_dependency 'minitest-spec-context'
+  s.add_development_dependency 'pry'
 end

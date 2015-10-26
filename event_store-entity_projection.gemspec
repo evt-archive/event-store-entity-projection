@@ -9,9 +9,6 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.required_ruby_version = '>= 1.9.2'
 
-  # TODO try remove Scott
-  # s.add_runtime_dependency 'inclusion', '1.0.0'
-
   s.add_runtime_dependency 'controls'
   s.add_runtime_dependency 'dependency'
   s.add_runtime_dependency 'event_store-messaging'

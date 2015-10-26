@@ -14,6 +14,10 @@ module EventStore
           attribute :some_time
         end
 
+        class UnhandledMessage
+          include EventStore::Messaging::Message
+        end
+
         def self.attribute
           'some value'
         end
@@ -40,6 +44,10 @@ module EventStore
 
         def self.examples
           [some_message, other_message]
+        end
+
+        def self.unhandled
+          UnhandledMessage.new
         end
       end
     end

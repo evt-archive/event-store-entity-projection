@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 Gem::Specification.new do |s|
   s.name = 'event_store-entity_projection'
-  s.version = '0.1.1'
+  s.version = '0.1.2'
   s.summary = 'Projects an event stream into an entity'
   s.description = ' '
 

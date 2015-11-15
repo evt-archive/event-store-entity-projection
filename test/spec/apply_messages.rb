@@ -6,14 +6,14 @@ describe "Apply Messages" do
   projection = EventStore::EntityProjection::Controls::EntityProjection.example
 
   specify "SomeMessage" do
-    some_message = EventStore::EntityProjection::Controls::Message::SomeMessage.build
-    projection.apply some_message, entity
+    some_message = EventStore::EntityProjection::Controls::Message::SomeMessage.build    # projection.apply some_message, entity
+    projection.apply some_message
     assert(entity.some_attribute == some_message.some_attribute)
   end
 
   specify "OtherMessage" do
     other_message = EventStore::EntityProjection::Controls::Message::OtherMessage.build
-    projection.apply other_message, entity
+    projection.apply other_message
     assert(entity.some_time == other_message.some_time)
   end
 end

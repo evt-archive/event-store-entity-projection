@@ -6,17 +6,17 @@ module EventStore
           include EventStore::EntityProjection
           include EventStore::EntityProjection::Controls::Message
 
-          apply SomeMessage do |message, entity|
+          apply SomeMessage do |message|
             entity.some_attribute = message.some_attribute
           end
 
-          apply OtherMessage do |message, entity|
+          apply OtherMessage do |message|
             entity.some_time = message.some_time
           end
         end
 
         def self.example
-          SomeProjection.new
+          SomeProjection.new(Entity.example)
         end
       end
     end

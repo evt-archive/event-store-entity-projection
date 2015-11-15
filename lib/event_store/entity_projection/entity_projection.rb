@@ -72,7 +72,7 @@ module EventStore
       alias :! :call # TODO: Remove deprecated actuator [Kelsey, Thu Oct 08 2015]
     end
 
-    def initialize(entity=nil)
+    def initialize(entity)
       @entity = entity
     end
 
@@ -95,17 +95,19 @@ module EventStore
 
     def dispatch(message, _)
       if self.class.handles?(message)
-        apply message, entity
+        apply message
       end
     end
 
-    def apply(message, entity)
+    def apply(message)
       logger.trace "Applying #{message.class.name} to #{entity.class.name}"
       handler_method_name = Info.handler_name(message)
-      send(handler_method_name, message, entity).tap do
+
+      send(handler_method_name, message).tap do
         logger.debug "Applied #{message.class.name} to #{entity.class.name}"
         logger.data entity.inspect
       end
+
       nil
     end
   end

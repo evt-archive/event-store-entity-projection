@@ -1,24 +1,24 @@
 require_relative 'spec_init'
 
-describe "Apply Macro" do
+context "Apply Macro" do
   projection = EventStore::EntityProjection::Controls::EntityProjection.example
 
-  describe "Handler Method Definitions" do
-    specify "apply_some_message" do
+  context "Handler Method Definitions" do
+    test "apply_some_message" do
       assert(projection.respond_to? :apply_some_message)
     end
 
-    specify "apply_other_message" do
+    test "apply_other_message" do
       assert(projection.respond_to? :apply_other_message)
     end
   end
 
-  describe "Register Messages" do
-    specify "SomeMessage" do
+  context "Register Messages" do
+    test "SomeMessage" do
       projection.class.message_registry.registered? EventStore::EntityProjection::Controls::Message::SomeMessage
     end
 
-    specify "OtherMessage" do
+    test "OtherMessage" do
       projection.class.message_registry.registered? EventStore::EntityProjection::Controls::Message::OtherMessage
     end
   end

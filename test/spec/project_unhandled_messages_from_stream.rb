@@ -1,6 +1,6 @@
 require_relative 'spec_init'
 
-describe "Projecting Unhandled Messages into an Entity from a Stream" do
+context "Projecting Unhandled Messages into an Entity from a Stream" do
   stream_name = EventStore::EntityProjection::Controls::StreamName.get 'testProjectUnhandledException'
 
   unhandled_message = EventStore::EntityProjection::Controls::Message.unhandled
@@ -9,7 +9,7 @@ describe "Projecting Unhandled Messages into an Entity from a Stream" do
 
   entity = EventStore::EntityProjection::Controls::Entity.example
 
-  specify "Is not an error (and does not apply the unhandled message)" do
+  test "Is not an error (and does not apply the unhandled message)" do
     EventStore::EntityProjection::Controls::EntityProjection::SomeProjection.(entity, stream_name)
   end
 end

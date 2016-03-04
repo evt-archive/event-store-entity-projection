@@ -1,4 +1,4 @@
-require_relative 'spec_init'
+require_relative 'bench_init'
 
 context "Apply Messages" do
   entity = EventStore::EntityProjection::Controls::Entity.example

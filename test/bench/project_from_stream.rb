@@ -1,4 +1,4 @@
-require_relative 'spec_init'
+require_relative 'bench_init'
 
 context "Project Messages into an Entity from a Stream" do
   stream_name = EventStore::EntityProjection::Controls::Writer.write_batch 'testProjection'

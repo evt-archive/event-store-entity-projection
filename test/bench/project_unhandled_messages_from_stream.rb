@@ -1,4 +1,4 @@
-require_relative 'spec_init'
+require_relative 'bench_init'
 
 context "Projecting Unhandled Messages into an Entity from a Stream" do
   stream_name = EventStore::EntityProjection::Controls::StreamName.get 'testProjectUnhandledException'

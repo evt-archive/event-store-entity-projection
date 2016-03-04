@@ -1,4 +1,4 @@
-require_relative 'spec_init'
+require_relative 'bench_init'
 
 context "Project Messages from a Stream that Doesn't Exist" do
   stream_name = EventStore::EntityProjection::Controls::StreamName.get 'testStreamNotFound'

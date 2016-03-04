@@ -1,4 +1,4 @@
-require_relative 'spec_init'
+require_relative 'bench_init'
 
 context "Apply Macro" do
   projection = EventStore::EntityProjection::Controls::EntityProjection.example

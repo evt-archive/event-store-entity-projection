@@ -53,11 +53,11 @@ module EventStore
     end
 
     module Build
-      def build(entity, stream_name, starting_position: nil, slice_size: nil)
+      def build(entity, stream_name, starting_position: nil, slice_size: nil, session: nil)
         logger.trace "Building projection (Entity Class: #{entity.class.name}, Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size})"
         new(entity).tap do |instance|
           dispatcher = instance
-          EventStore::Messaging::Reader.configure instance, stream_name, dispatcher, starting_position: starting_position, slice_size: slice_size
+          EventStore::Messaging::Reader.configure instance, stream_name, dispatcher, starting_position: starting_position, slice_size: slice_size, session: session
           Telemetry::Logger.configure instance
           logger.debug "Built projection (Entity Class: #{entity.class.name}, Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size})"
         end
@@ -65,8 +65,8 @@ module EventStore
     end
 
     module Actuate
-      def call(entity, stream_name, starting_position: nil, slice_size: nil)
-        instance = build entity, stream_name, starting_position: starting_position, slice_size: slice_size
+      def call(entity, stream_name, starting_position: nil, slice_size: nil, session: nil)
+        instance = build entity, stream_name, starting_position: starting_position, slice_size: slice_size, session: session
         instance.()
       end
       alias :! :call # TODO: Remove deprecated actuator [Kelsey, Thu Oct 08 2015]

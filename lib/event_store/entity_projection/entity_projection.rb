@@ -30,11 +30,11 @@ module EventStore
       def define_handler_method(message_class, &blk)
         logger = Telemetry::Logger.get self
 
-        logger.trace "Defining projection method (Message: #{message_class})"
+        logger.opt_trace "Defining projection method (Message: #{message_class})"
 
         projection_method_name = handler_name(message_class)
         send(:define_method, projection_method_name, &blk).tap do
-          logger.debug "Defined projection method (Method Name: #{projection_method_name}, Message: #{message_class})"
+          logger.opt_debug "Defined projection method (Method Name: #{projection_method_name}, Message: #{message_class})"
         end
       end
     end
@@ -54,12 +54,12 @@ module EventStore
 
     module Build
       def build(entity, stream_name, starting_position: nil, slice_size: nil, session: nil)
-        logger.trace "Building projection (Entity Class: #{entity.class.name}, Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size})"
+        logger.opt_trace "Building projection (Entity Class: #{entity.class.name}, Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size})"
         new(entity).tap do |instance|
           dispatcher = instance
           EventStore::Messaging::Reader.configure instance, stream_name, dispatcher, starting_position: starting_position, slice_size: slice_size, session: session
           Telemetry::Logger.configure instance
-          logger.debug "Built projection (Entity Class: #{entity.class.name}, Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size})"
+          logger.opt_debug "Built projection (Entity Class: #{entity.class.name}, Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size})"
         end
       end
     end
@@ -83,7 +83,7 @@ module EventStore
         event_number = event_data.number
       end
 
-      logger.debug "Ran projection (Last Event Number: #{event_number})"
+      logger.debug "Ran projection (Last Event Number: #{event_number.inspect})"
 
       event_number
     end
@@ -100,11 +100,11 @@ module EventStore
     end
 
     def apply(message)
-      logger.trace "Applying #{message.class.name} to #{entity.class.name}"
+      logger.opt_trace "Applying #{message.class.name} to #{entity.class.name}"
       handler_method_name = Info.handler_name(message)
 
       send(handler_method_name, message).tap do
-        logger.debug "Applied #{message.class.name} to #{entity.class.name}"
+        logger.opt_debug "Applied #{message.class.name} to #{entity.class.name}"
         logger.data entity.inspect
       end
 

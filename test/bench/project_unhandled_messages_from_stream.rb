@@ -9,7 +9,7 @@ context "Projecting Unhandled Messages into an Entity from a Stream" do
 
   entity = EventStore::EntityProjection::Controls::Entity.example
 
-  test "Is not an error (and does not apply the unhandled message)" do
+  test "Is not an error" do
     EventStore::EntityProjection::Controls::EntityProjection::SomeProjection.(entity, stream_name)
   end
 end

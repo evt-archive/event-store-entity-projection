@@ -77,14 +77,11 @@ module EventStore
     def call
       logger.trace "Running projection"
 
-      event_number = nil
-      reader.start do |_, event_data|
-        event_number = event_data.number
-      end
+      last_event_number = reader.start
 
-      logger.debug "Ran projection (Last Event Number: #{event_number.inspect})"
+      logger.debug "Ran projection (Last Event Number: #{last_event_number.inspect})"
 
-      event_number
+      last_event_number
     end
     alias :! :call # TODO: Remove deprecated actuator [Kelsey, Thu Oct 08 2015]
 

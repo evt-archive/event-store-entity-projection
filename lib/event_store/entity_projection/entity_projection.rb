@@ -76,6 +76,7 @@ module EventStore
 
     def call
       logger.trace "Running projection"
+
       event_number = nil
       reader.start do |_, event_data|
         event_number = event_data.number

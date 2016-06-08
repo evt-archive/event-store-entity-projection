@@ -8,12 +8,12 @@ module EventStore
 
           entity_name :some_entity
 
-          apply SomeMessage do |message|
-            entity.some_attribute = message.some_attribute
+          apply SomeMessage do |some_message|
+            some_entity.some_attribute = some_message.some_attribute
           end
 
-          apply OtherMessage do |message|
-            entity.some_time = message.some_time
+          apply OtherMessage do |other_message|
+            some_entity.some_time = other_message.some_time
           end
         end
 

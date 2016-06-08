@@ -5,6 +5,7 @@ module EventStore
       cls.extend Build
       cls.extend Actuate
       cls.extend ApplyMacro
+      cls.extend EntityNameMacro
       cls.extend Info
       cls.extend EventStore::Messaging::Dispatcher::MessageRegistry
       cls.extend EventStore::Messaging::Dispatcher::BuildMessage
@@ -37,6 +38,15 @@ module EventStore
           logger.opt_debug "Defined projection method (Method Name: #{projection_method_name}, Message: #{message_class})"
         end
       end
+    end
+
+    module EntityNameMacro
+      def entity_name_macro(entity_name)
+        send(:define_method, entity_name) do
+          entity
+        end
+      end
+      alias :entity_name :entity_name_macro
     end
 
     module Info

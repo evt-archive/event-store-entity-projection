@@ -6,6 +6,8 @@ module EventStore
           include EventStore::EntityProjection
           include EventStore::EntityProjection::Controls::Message
 
+          entity_name :some_entity
+
           apply SomeMessage do |message|
             entity.some_attribute = message.some_attribute
           end

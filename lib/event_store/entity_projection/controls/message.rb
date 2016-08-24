@@ -26,9 +26,11 @@ module EventStore
           time || ::Controls::Time.reference
         end
 
-        def self.example
+        def self.example(attribute_value=nil)
+          attribute_value ||= attribute
+
           msg = SomeMessage.new
-          msg.some_attribute = attribute
+          msg.some_attribute = attribute_value
           msg
         end
 

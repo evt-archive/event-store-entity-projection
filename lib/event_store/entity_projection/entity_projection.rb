@@ -1,18 +1,21 @@
 module EventStore
   module EntityProjection
     def self.included(cls)
-      cls.extend Logger
-      cls.extend Build
-      cls.extend Actuate
-      cls.extend ApplyMacro
-      cls.extend EntityNameMacro
-      cls.extend Info
-      cls.extend EventStore::Messaging::Dispatcher::MessageRegistry
-      cls.extend EventStore::Messaging::Dispatcher::BuildMessage
+      cls.class_exec do
+        extend Logger
+        extend Build
+        extend Actuate
+        extend ApplyMacro
+        extend EntityNameMacro
+        extend Info
+        extend EventStore::Messaging::Dispatcher::MessageRegistry
+        extend EventStore::Messaging::Dispatcher::BuildMessage
 
-      cls.send :attr_reader, :entity
-      cls.send :dependency, :reader, EventStore::Messaging::Reader
-      cls.send :dependency, :logger, Telemetry::Logger
+        attr_reader :entity
+
+        dependency :reader, EventStore::Messaging::Reader
+        dependency :logger, Telemetry::Logger
+      end
     end
 
     module Logger
@@ -63,18 +66,18 @@ module EventStore
     end
 
     module Build
-      def build(entity, stream_name, starting_position: nil, slice_size: nil, session: nil)
+      def build(entity, stream_name, starting_position: nil, ending_position: nil, slice_size: nil, session: nil)
         new(entity).tap do |instance|
           dispatcher = instance
-          EventStore::Messaging::Reader.configure instance, stream_name, dispatcher, starting_position: starting_position, slice_size: slice_size, session: session
+          EventStore::Messaging::Reader.configure instance, stream_name, dispatcher, starting_position: starting_position, ending_position: ending_position, slice_size: slice_size, session: session
           Telemetry::Logger.configure instance
         end
       end
     end
 
     module Actuate
-      def call(entity, stream_name, starting_position: nil, slice_size: nil, session: nil)
-        instance = build entity, stream_name, starting_position: starting_position, slice_size: slice_size, session: session
+      def call(entity, stream_name, starting_position: nil, ending_position: nil, slice_size: nil, session: nil)
+        instance = build entity, stream_name, starting_position: starting_position, ending_position: ending_position, slice_size: slice_size, session: session
         instance.()
       end
       alias :! :call # TODO: Remove deprecated actuator [Kelsey, Thu Oct 08 2015]

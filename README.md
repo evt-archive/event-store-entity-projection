@@ -25,8 +25,13 @@ end
 
 ## Project Into an Entity
 ```ruby
+# Project all events in the stream starting from some_version
 entity = SomeEntity.new
 SomeProjection.(entity, stream_name, starting_position: some_version)
+
+# Project all events in the stream starting from some_version and ending at ending_version
+entity = SomeEntity.new
+SomeProjection.(entity, stream_name, starting_position, some_version, ending_position: ending_version)
 ```
 
 ## License

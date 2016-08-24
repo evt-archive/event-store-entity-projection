@@ -1,18 +1,21 @@
 module EventStore
   module EntityProjection
     def self.included(cls)
-      cls.extend Logger
-      cls.extend Build
-      cls.extend Actuate
-      cls.extend ApplyMacro
-      cls.extend EntityNameMacro
-      cls.extend Info
-      cls.extend EventStore::Messaging::Dispatcher::MessageRegistry
-      cls.extend EventStore::Messaging::Dispatcher::BuildMessage
+      cls.class_exec do
+        extend Logger
+        extend Build
+        extend Actuate
+        extend ApplyMacro
+        extend EntityNameMacro
+        extend Info
+        extend EventStore::Messaging::Dispatcher::MessageRegistry
+        extend EventStore::Messaging::Dispatcher::BuildMessage
 
-      cls.send :attr_reader, :entity
-      cls.send :dependency, :reader, EventStore::Messaging::Reader
-      cls.send :dependency, :logger, Telemetry::Logger
+        attr_reader :entity
+
+        dependency :reader, EventStore::Messaging::Reader
+        dependency :logger, Telemetry::Logger
+      end
     end
 
     module Logger

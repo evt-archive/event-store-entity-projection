@@ -1,5 +1,3 @@
-require 'clock/controls'
-
 require 'event_store/messaging/controls'
 
 require 'event_store/entity_projection/controls/stream_name'

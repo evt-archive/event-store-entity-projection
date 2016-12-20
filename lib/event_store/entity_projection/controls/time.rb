@@ -1,7 +1,7 @@
 module EventStore
   module EntityProjection
     module Controls
-      Time = Clock::Controls::Time
+      Time = EventStore::Messaging::Controls::Time
     end
   end
 end

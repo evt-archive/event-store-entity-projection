@@ -4,66 +4,19 @@ module EventStore
       cls.class_exec do
         include Log::Dependency
 
-        extend Logger
         extend Build
         extend Actuate
-        extend ApplyMacro
-        extend EntityNameMacro
-        extend Info
-        extend ::Messaging::Handle::MessageRegistry
+
+        extend ::EntityProjection::Info
+        extend ::EntityProjection::ApplyMacro
+        extend ::EntityProjection::EntityNameMacro
+        extend ::EntityProjection::MessageRegistry
 
         initializer :entity
 
         attr_accessor :ending_position
 
         dependency :read, EventSource::Read
-      end
-    end
-
-    module Logger
-      def logger
-        Log.get self
-      end
-    end
-
-    module ApplyMacro
-      def apply_macro(message_class, &blk)
-        define_handler_method(message_class, &blk)
-        message_registry.register(message_class)
-      end
-      alias :apply :apply_macro
-
-      def define_handler_method(message_class, &blk)
-        logger = Log.get self
-
-        logger.trace { "Defining projection method (Message: #{message_class})" }
-
-        projection_method_name = handler_name(message_class)
-        send(:define_method, projection_method_name, &blk).tap do
-          logger.debug { "Defined projection method (Method Name: #{projection_method_name}, Message: #{message_class})" }
-        end
-      end
-    end
-
-    module EntityNameMacro
-      def entity_name_macro(entity_name)
-        send(:define_method, entity_name) do
-          entity
-        end
-      end
-      alias :entity_name :entity_name_macro
-    end
-
-    module Info
-      extend self
-
-      def handles?(message)
-        method_defined? handler_name(message)
-      end
-
-      def handler_name(message)
-        name = ::Messaging::Message::Info.message_name(message)
-        "apply_#{name}"
       end
     end
 
@@ -101,7 +54,7 @@ module EventStore
 
         message = build_message event_data
 
-        dispatch message, event_data
+        dispatch message, event_data unless message.nil?
 
         break if last_event_number == ending_position
       end
@@ -130,7 +83,7 @@ module EventStore
 
     def apply(message)
       logger.trace { "Applying #{message.class.name} to #{entity.class.name}" }
-      handler_method_name = Info.handler_name(message)
+      handler_method_name = ::EntityProjection::Info.handler_name(message)
 
       send(handler_method_name, message).tap do
         logger.debug { "Applied #{message.class.name} to #{entity.class.name}" }

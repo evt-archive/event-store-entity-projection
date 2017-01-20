@@ -9,12 +9,14 @@ module EventStore
         extend Actuate
         include Call
 
-        initializer :entity
-
         attr_accessor :ending_position
 
         dependency :read, EventSource::Read
       end
+    end
+
+    def apply(message)
+      handle_message message
     end
 
     module Build
@@ -42,7 +44,15 @@ module EventStore
     end
 
     module Call
-      def call
+      def self.included(cls)
+        cls.class_exec do
+          alias_method :project, :call
+          alias_method :call, :call_replacement
+          alias :! :call # TODO: Remove deprecated actuator [Kelsey, Thu Oct 08 2015]
+        end
+      end
+
+      def call_replacement
         logger.trace { "Running projection" }
 
         last_event_number = nil
@@ -50,9 +60,7 @@ module EventStore
         read.() do |event_data|
           last_event_number = event_data.position
 
-          message = build_message event_data
-
-          dispatch message, event_data unless message.nil?
+          project event_data
 
           break if last_event_number == ending_position
         end
@@ -61,35 +69,6 @@ module EventStore
 
         last_event_number
       end
-      alias :! :call # TODO: Remove deprecated actuator [Kelsey, Thu Oct 08 2015]
-    end
-
-    def build_message(event_data)
-      message_name = ::Messaging::Message::Info.canonize_name event_data.type
-
-      message_class = self.class.message_registry.get message_name
-
-      return nil if message_class.nil?
-
-      ::Messaging::Message::Import.(event_data, message_class)
-    end
-
-    def dispatch(message, _)
-      if self.class.handles?(message)
-        apply message
-      end
-    end
-
-    def apply(message)
-      logger.trace { "Applying #{message.class.name} to #{entity.class.name}" }
-      handler_method_name = ::EntityProjection::Info.handler_name(message)
-
-      send(handler_method_name, message).tap do
-        logger.debug { "Applied #{message.class.name} to #{entity.class.name}" }
-        logger.debug { entity.pretty_inspect }
-      end
-
-      nil
     end
   end
 end

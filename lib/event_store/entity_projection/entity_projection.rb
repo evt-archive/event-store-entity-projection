@@ -10,8 +10,7 @@ module EventStore
         extend ApplyMacro
         extend EntityNameMacro
         extend Info
-        extend EventStore::Messaging::Dispatcher::MessageRegistry
-        extend EventStore::Messaging::Dispatcher::BuildMessage
+        extend ::Messaging::Handle::MessageRegistry
 
         initializer :entity
 
@@ -63,7 +62,7 @@ module EventStore
       end
 
       def handler_name(message)
-        name = EventStore::Messaging::Message::Info.message_name(message)
+        name = ::Messaging::Message::Info.message_name(message)
         "apply_#{name}"
       end
     end
@@ -113,8 +112,14 @@ module EventStore
     end
     alias :! :call # TODO: Remove deprecated actuator [Kelsey, Thu Oct 08 2015]
 
-    def build_message(entry_data)
-      self.class.build_message(entry_data)
+    def build_message(event_data)
+      message_name = ::Messaging::Message::Info.canonize_name event_data.type
+
+      message_class = self.class.message_registry.get message_name
+
+      return nil if message_class.nil?
+
+      ::Messaging::Message::Import.(event_data, message_class)
     end
 
     def dispatch(message, _)

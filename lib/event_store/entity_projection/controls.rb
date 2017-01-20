@@ -1,4 +1,4 @@
-require 'event_store/messaging/controls'
+require 'messaging/event_store/controls'
 
 require 'event_store/entity_projection/controls/stream_name'
 require 'event_store/entity_projection/controls/entity'

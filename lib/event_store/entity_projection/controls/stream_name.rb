@@ -3,7 +3,7 @@ module EventStore
     module Controls
       module StreamName
         def self.get(category=nil)
-          EventStore::Client::HTTP::Controls::StreamName.get category
+          ::Messaging::Controls::StreamName.example category: category
         end
       end
     end

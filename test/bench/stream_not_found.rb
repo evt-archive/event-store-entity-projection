@@ -7,7 +7,7 @@ context "Project Messages from a Stream that Doesn't Exist" do
 
   event_number = EventStore::EntityProjection::Controls::EntityProjection::SomeProjection.(entity, stream_name)
 
-  __logger.info "Last Event Number: #{event_number}"
+  comment "Last Event Number: #{event_number}"
 
   context "Entity Attributes Are Not Set" do
     test "some_attribute" do

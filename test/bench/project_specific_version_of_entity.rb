@@ -11,10 +11,21 @@ context "Projecting a Specific Version of an Entity" do
 
   entity = EventStore::EntityProjection::Controls::Entity.example
 
-  last_event_number = EventStore::EntityProjection::Controls::EntityProjection::SomeProjection.(entity, stream_name, ending_position: 0)
+  projection = EventStore::EntityProjection::Controls::EntityProjection::SomeProjection.build entity
+
+  ending_position = 0
+
+  event_number = nil
+
+  read = EventSource::EventStore::HTTP::Read.build stream_name, position: 0, batch_size: 1
+  read.() do |event_data|
+    projection.(event_data)
+    event_number = event_data.position
+    break if event_data.position == ending_position
+  end
 
   test "Last version considered matches specified version" do
-    assert last_event_number == 0
+    assert event_number == ending_position
   end
 
   test "Messages written after specified version are not applied" do

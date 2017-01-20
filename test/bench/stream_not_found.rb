@@ -5,7 +5,15 @@ context "Project Messages from a Stream that Doesn't Exist" do
 
   entity = EventStore::EntityProjection::Controls::Entity.example
 
-  event_number = EventStore::EntityProjection::Controls::EntityProjection::SomeProjection.(entity, stream_name)
+  projection = EventStore::EntityProjection::Controls::EntityProjection::SomeProjection.build entity
+
+  event_number = nil
+
+  read = EventSource::EventStore::HTTP::Read.build stream_name, position: 0, batch_size: 1
+  read.() do |event_data|
+    projection.(event_data)
+    event_number = event_data.position
+  end
 
   comment "Last Event Number: #{event_number}"
 

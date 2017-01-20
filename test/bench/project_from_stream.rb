@@ -5,7 +5,15 @@ context "Project Messages into an Entity from a Stream" do
 
   entity = EventStore::EntityProjection::Controls::Entity.example
 
-  event_number = EventStore::EntityProjection::Controls::EntityProjection::SomeProjection.(entity, stream_name, starting_position: 0, slice_size: 1)
+  projection = EventStore::EntityProjection::Controls::EntityProjection::SomeProjection.build entity
+
+  event_number = nil
+
+  read = EventSource::EventStore::HTTP::Read.build stream_name, position: 0, batch_size: 1
+  read.() do |event_data|
+    projection.(event_data)
+    event_number = event_data.position
+  end
 
   context "Entity Attributes" do
     test "some_attribute" do

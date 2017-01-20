@@ -3,14 +3,11 @@ module EventStore
     def self.included(cls)
       cls.class_exec do
         include Log::Dependency
+        include ::EntityProjection
 
         extend Build
         extend Actuate
-
-        extend ::EntityProjection::Info
-        extend ::EntityProjection::ApplyMacro
-        extend ::EntityProjection::EntityNameMacro
-        extend ::EntityProjection::MessageRegistry
+        include Call
 
         initializer :entity
 
@@ -44,26 +41,28 @@ module EventStore
       alias :! :call # TODO: Remove deprecated actuator [Kelsey, Thu Oct 08 2015]
     end
 
-    def call
-      logger.trace { "Running projection" }
+    module Call
+      def call
+        logger.trace { "Running projection" }
 
-      last_event_number = nil
-      
-      read.() do |event_data|
-        last_event_number = event_data.position
+        last_event_number = nil
 
-        message = build_message event_data
+        read.() do |event_data|
+          last_event_number = event_data.position
 
-        dispatch message, event_data unless message.nil?
+          message = build_message event_data
 
-        break if last_event_number == ending_position
+          dispatch message, event_data unless message.nil?
+
+          break if last_event_number == ending_position
+        end
+
+        logger.debug { "Ran projection (Last Event Number: #{last_event_number.inspect})" }
+
+        last_event_number
       end
-
-      logger.debug { "Ran projection (Last Event Number: #{last_event_number.inspect})" }
-
-      last_event_number
+      alias :! :call # TODO: Remove deprecated actuator [Kelsey, Thu Oct 08 2015]
     end
-    alias :! :call # TODO: Remove deprecated actuator [Kelsey, Thu Oct 08 2015]
 
     def build_message(event_data)
       message_name = ::Messaging::Message::Info.canonize_name event_data.type

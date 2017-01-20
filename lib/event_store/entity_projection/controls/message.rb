@@ -3,19 +3,19 @@ module EventStore
     module Controls
       module Message
         class SomeMessage
-          include EventStore::Messaging::Message
+          include ::Messaging::Message
 
           attribute :some_attribute
         end
 
         class OtherMessage
-          include EventStore::Messaging::Message
+          include ::Messaging::Message
 
           attribute :some_time
         end
 
         class UnhandledMessage
-          include EventStore::Messaging::Message
+          include ::Messaging::Message
         end
 
         def self.attribute

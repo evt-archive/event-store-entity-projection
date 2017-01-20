@@ -13,9 +13,11 @@ module EventStore
         extend EventStore::Messaging::Dispatcher::MessageRegistry
         extend EventStore::Messaging::Dispatcher::BuildMessage
 
-        attr_reader :entity
+        initializer :entity
 
-        dependency :reader, EventStore::Messaging::Reader
+        attr_accessor :ending_position
+
+        dependency :read, EventSource::Read
       end
     end
 
@@ -69,28 +71,41 @@ module EventStore
     module Build
       def build(entity, stream_name, starting_position: nil, ending_position: nil, slice_size: nil, session: nil)
         new(entity).tap do |instance|
-          dispatcher = instance
-          EventStore::Messaging::Reader.configure instance, stream_name, dispatcher, starting_position: starting_position, ending_position: ending_position, slice_size: slice_size, session: session
+          instance.ending_position = ending_position unless ending_position.nil?
+
+          EventSource::EventStore::HTTP::Read.configure(
+            instance,
+            stream_name,
+            position: starting_position,
+            batch_size: slice_size,
+            session: session
+          )
         end
       end
     end
 
     module Actuate
-      def call(entity, stream_name, starting_position: nil, ending_position: nil, slice_size: nil, session: nil)
-        instance = build entity, stream_name, starting_position: starting_position, ending_position: ending_position, slice_size: slice_size, session: session
+      def call(entity, stream_name, **arguments)
+        instance = build entity, stream_name, **arguments
         instance.()
       end
       alias :! :call # TODO: Remove deprecated actuator [Kelsey, Thu Oct 08 2015]
     end
 
-    def initialize(entity)
-      @entity = entity
-    end
-
     def call
       logger.trace { "Running projection" }
 
-      last_event_number = reader.start
+      last_event_number = nil
+      
+      read.() do |event_data|
+        last_event_number = event_data.position
+
+        message = build_message event_data
+
+        dispatch message, event_data
+
+        break if last_event_number == ending_position
+      end
 
       logger.debug { "Ran projection (Last Event Number: #{last_event_number.inspect})" }
 
